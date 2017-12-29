@@ -79,6 +79,8 @@ public class HuffmanTree<T> {
 			left = nodes.get(nodes.size() - 1);
 			right = nodes.get(nodes.size() - 2);
 			parent = new HuffmanTreeNode<T>(null, left.weight + right.weight);
+			left.parent=parent;
+			right.parent=parent;
 			parent.left = left;
 			parent.right = right;
 			nodes.remove(left);
