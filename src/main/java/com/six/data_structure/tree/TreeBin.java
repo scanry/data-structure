@@ -1,4 +1,4 @@
-package com.six.data_structure;
+package com.six.data_structure.tree;
 
 import java.lang.reflect.Field;
 import java.util.Objects;

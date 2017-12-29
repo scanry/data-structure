@@ -5,7 +5,9 @@ import java.util.Comparator;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import com.six.data_structure.BalanceBinaryTree;
+import com.six.data_structure.tree.BalanceBinaryTree;
+import com.six.data_structure.tree.RedBlackTree;
+import com.six.data_structure.tree.TreeBin;
 
 /**
  * @author sixliu
