@@ -28,7 +28,27 @@ public class BalanceBinaryTree<T> {
 			this.height = 1;
 		}
 
-		Node<T> add(Comparator<T> comparator, T value) {
+		protected Node<T> find(Comparator<T> comparator, T value) {
+			Node<T> find = null;
+			int cmp = comparator.compare(value, this.value);
+			if (cmp < 0) {
+				find = this.left;
+				if (null == find) {
+					return null;
+				}
+				return find.find(comparator, value);
+			} else if (cmp > 0) {
+				find = this.right;
+				if (null == find) {
+					return null;
+				}
+				return find.find(comparator, value);
+			} else {
+				return this;
+			}
+		}
+
+		protected Node<T> add(Comparator<T> comparator, T value) {
 			Node<T> insertPosition = null;
 			int cmp = comparator.compare(value, this.value);
 			if (cmp < 0) {
@@ -55,6 +75,36 @@ public class BalanceBinaryTree<T> {
 				return (right.height == initHeight) ? this : balanceInsert();
 			} else {
 				return this;
+			}
+		}
+
+		protected Node<T> remove(Comparator<T> comparator, Node<T> parent, Node<T> children) {
+			Node<T> removePosition = null;
+			int cmp = comparator.compare(parent.value, this.value);
+			if (cmp < 0) {
+				removePosition = this.left;
+				int initHeight = this.left.height;
+				this.left = removePosition.remove(comparator, parent, children);
+				return (left.height == initHeight) ? this : balanceInsert();
+			} else if (cmp > 0) {
+				removePosition = this.right;
+				int initHeight = this.right.height;
+				this.right = removePosition.remove(comparator, parent, children);
+				return (right.height == initHeight) ? this : balanceInsert();
+			} else {
+				int initHeight = this.height;
+				if (children == this.right) {
+					this.right = null;
+					if(null!=this.left) {
+						this.height--;
+					}
+				} else {
+					this.left = null;
+					if(null!=this.right) {
+						this.height--;
+					}
+				}
+				return (height == initHeight) ? this : balanceInsert();
 			}
 		}
 
@@ -162,25 +212,131 @@ public class BalanceBinaryTree<T> {
 	}
 
 	public Node<T> remove(T value) {
-		Node<T> findNode = findNode(value);
-		Node<T> parent = findNode.parent;
-		if (null == findNode.left && null == findNode.right) {
-			if (null != parent && parent.left == findNode) {
-				parent.left = null;
-			} else if (null != parent && parent.right == findNode) {
-				parent.right = null;
-			} else {
-				root = null;
+		Node<T> findNode = null;
+		if (null != root) {
+			findNode = root.find(comparator, value);
+			if (null != findNode) {
+				Node<T> parent = null;
+				if (null == (parent = findNode.parent)) {
+					if (null == findNode.left && null == findNode.right) {
+						root = null;
+					} else if (null != findNode.left && null == findNode.right) {
+						/**
+						 * 1.左孩子中顶替当前节点 2.删除节点 
+						 */
+						root = findNode.left;
+						findNode.parent = null;
+					} else if (null == findNode.left && null != findNode.right) {
+						/**
+						 * 1.右孩子中顶替当前节点 2.删除节点 
+						 */
+						root = findNode.right;
+						findNode.parent = null;
+					} else {
+						/**
+						 * 1.从左孩子中找到一个临近节点 2.跟临近孩子节点互换位置 3.删除节点 4.递归调整平衡
+						 */
+						Node<T> findNearNode = findNearNode(findNode);
+						findNearNode.left = findNode.left;
+						findNode.left.parent = findNearNode;
+						if (findNearNode != findNode.right) {
+							findNearNode.right = findNode.right;
+							findNode.right.parent = findNearNode;
+							if (findNearNode.parent.left == findNearNode) {
+								findNearNode.parent.left = findNode;
+							} else {
+								findNearNode.parent.right = findNode;
+							}
+							findNode.parent = findNearNode.parent;
+							findNode.left = null;
+							findNode.right = null;
+							root = findNearNode;
+							root = root.remove(comparator,findNode.parent,findNode);
+						} else {
+							findNearNode.parent = null;
+							root = findNearNode;
+						}
+					}
+				} else {
+					if (null == findNode.left && null == findNode.right) {
+						root = root.remove(comparator, parent, findNode);
+					} else if (null != findNode.left && null == findNode.right) {
+						/**
+						 * 1.左孩子中顶替当前节点 2.删除节点 
+						 */
+						if (parent.left == findNode) {
+							parent.left = findNode.left;
+						} else {
+							parent.right = findNode.left;
+						}
+						findNode.left.parent=parent;
+						findNode.parent=findNode.left;
+						findNode.left.left=findNode;
+						findNode.left=null;
+						root = root.remove(comparator, findNode.parent, findNode);
+					} else if (null == findNode.left && null != findNode.right) {
+						/**
+						 * 1.右孩子中顶替当前节点 2.删除节点 
+						 */
+						if (parent.left == findNode) {
+							parent.left = findNode.right;
+						} else {
+							parent.right = findNode.right;
+						}
+						findNode.right.parent=parent;
+						findNode.parent=findNode.right;
+						findNode.right.right=findNode;
+						findNode.right=null;
+						root = root.remove(comparator, findNode.parent, findNode);
+					} else {
+						/**
+						 * 1.从左孩子中找到一个临近节点 2.跟临近孩子节点互换位置 3.删除节点 4.递归调整平衡
+						 */
+						Node<T> findNearNode = findNearNode(findNode);
+						if (parent.left == findNode) {
+							parent.left = findNearNode;
+						} else {
+							parent.right = findNearNode;
+						}
+						
+						findNearNode.left = findNode.left;
+						findNode.left.parent = findNearNode;
+						if (findNearNode != findNode.right) {
+							findNearNode.right = findNode.right;
+							findNode.right.parent = findNearNode;
+							if (findNearNode.parent.left == findNearNode) {
+								findNearNode.parent.left = findNode;
+							} else {
+								findNearNode.parent.right = findNode;
+							}
+							findNode.parent=findNearNode.parent;
+						} else {
+							findNearNode.right = findNode;
+							findNode.parent = findNearNode;
+						}
+						findNearNode.parent = parent;
+						findNode.left = null;
+						findNode.right = null;
+						root = root.remove(comparator, findNode.parent, findNode);
+					}
+				}
 			}
-		}
-		if (root == findNode) {
-			root = findNode.left;
 		}
 		return findNode;
 	}
 
-	Node<T> findNode(T value) {
-		return null;
+	/**
+	 * 寻找临近节点
+	 * 
+	 * @param current
+	 * @return
+	 */
+	private Node<T> findNearNode(Node<T> current) {
+		Node<T> findNearNode = current.right;
+		while (null != findNearNode && null != findNearNode.left) {
+			findNearNode = findNearNode.left;
+		}
+		return findNearNode;
 	}
 
 	public void preOrder(Consumer<T> consumer) {
@@ -195,7 +351,7 @@ public class BalanceBinaryTree<T> {
 			preOrder(root.right, consumer);
 		}
 	}
-	
+
 	public void preOrderByloop(Consumer<T> consumer) {
 		if (root != null) {
 			Stack<Node<T>> stack = new Stack<>();
@@ -257,7 +413,7 @@ public class BalanceBinaryTree<T> {
 			consumer.accept(root.value);
 		}
 	}
-	
+
 	public void postOrderByloop(Consumer<T> consumer) {
 		if (root != null) {
 			Stack<Node<T>> stack = new Stack<>();

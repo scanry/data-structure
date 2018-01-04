@@ -18,7 +18,7 @@ import com.six.data_structure.tree.TreeBin;
 public class BalanceBinaryTreeTest {
 
 	public static void main(String[] args) {
-		int size=10;
+		int size=20;
 		Consumer<Integer> consumer = value -> System.out.print(value + "  ");
 		BalanceBinaryTree<Integer> tree = new BalanceBinaryTree<>(new Comparator<Integer>() {
 			@Override
@@ -29,6 +29,30 @@ public class BalanceBinaryTreeTest {
 		for (int i = 0; i < size; i++) {
 			tree.add(i);
 		}
+		testRemove(size, 1);
+		tree.remove(1);
+		tree.midOrderByloop(consumer);
+		System.out.print("\n");
+		testRemove(size,1,3);
+		tree.remove(3);
+		tree.midOrderByloop(consumer);
+		System.out.print("\n");
+		testRemove(size,1,3,0);
+		tree.remove(0);
+		tree.midOrderByloop(consumer);
+		System.out.print("\n");
+		testRemove(size,1,3,0,7);
+		tree.remove(7);
+		tree.midOrderByloop(consumer);
+		System.out.print("\n");
+		testRemove(size, 1,3,0,7,19);
+		tree.remove(19);
+		tree.midOrderByloop(consumer);
+		System.out.print("\n");
+		testRemove(size, 1,3,0,7,19,15);
+		tree.remove(15);
+		tree.midOrderByloop(consumer);
+		System.out.print("\n");
 		System.out.print("平衡二叉树树测试\n");
 		tree.preOrder(consumer);
 		System.out.print("\n");
@@ -70,6 +94,31 @@ public class BalanceBinaryTreeTest {
 		ArrayList<String> list=new ArrayList<String>();
 		list.iterator().forEachRemaining(System.out::println);;
 		hashCode(0, ("送").toCharArray());
+	}
+	
+	public static void testRemove(int size,int... removeNums) {
+		Consumer<Integer> consumer = value -> System.out.print(value + "  ");
+		BalanceBinaryTree<Integer> tree = new BalanceBinaryTree<>(new Comparator<Integer>() {
+			@Override
+			public int compare(Integer o1, Integer o2) {
+				return o1.compareTo(o2);
+			}
+		});
+		for (int i = 0; i < size; i++) {
+			boolean add=true;
+			for(int num:removeNums) {
+				if(i==num) {
+					add=false;
+					break;
+				}
+			}
+			if(add) {
+				tree.add(i);
+			}
+		}
+		System.out.print("对比数据:\n");
+		tree.midOrderByloop(consumer);
+		System.out.print("\n");
 	}
 	
     public static int hashCode(int hash,char[] value) {
