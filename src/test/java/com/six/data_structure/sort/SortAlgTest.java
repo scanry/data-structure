@@ -19,11 +19,11 @@ public class SortAlgTest {
 	}
 
 	public static void main(String[] args) {
-		int size = (int) Math.pow(2, 4);
+		int size = (int) Math.pow(2, 15);
 		System.out.println("size:" + size);
 		int bound = 100;
 		int loopCount =20;
-		boolean isPrint = true;
+		boolean isPrint = false;
 		List<Integer> newList=newList(size, bound);
 		totalSpendTime("java sort", (list) -> {
 			Collections.sort(list);

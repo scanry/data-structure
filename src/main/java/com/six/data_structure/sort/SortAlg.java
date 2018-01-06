@@ -14,6 +14,11 @@ import java.util.Objects;
  */
 public class SortAlg {
 
+	/**
+	 * 冒泡排序
+	 * 
+	 * @param list
+	 */
 	public static <T extends Comparable<T>> void bubbleSort(List<T> list) {
 		Comparator<T> comparator = (T t1, T t2) -> {
 			return ((Comparable<T>) t1).compareTo(t2);
@@ -21,6 +26,12 @@ public class SortAlg {
 		bubbleSort(list, comparator);
 	}
 
+	/**
+	 * 冒泡排序
+	 * 
+	 * @param list
+	 * @param comparator
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static <T> void bubbleSort(List<T> list, Comparator<T> comparator) {
 		Objects.requireNonNull(list);
@@ -133,11 +144,11 @@ public class SortAlg {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static <T> void mergeSort(List<T> list, Comparator<T> comparator) {
 		Objects.requireNonNull(list);
-		Object[] arrays = list.toArray();
-		T[] newArrays = (T[]) Array.newInstance(arrays.getClass().getComponentType(), arrays.length);
-		mergeSort(arrays, newArrays, (Comparator) comparator);
+		Object[] array = list.toArray();
+		T[] tempArray = (T[]) Array.newInstance(array.getClass().getComponentType(), array.length);
+		mergeSort(array, tempArray, (Comparator) comparator);
 		ListIterator<T> i = list.listIterator();
-		for (Object e : newArrays) {
+		for (Object e : array) {
 			i.next();
 			i.set((T) e);
 		}
@@ -149,43 +160,48 @@ public class SortAlg {
 	 * @param list
 	 * @param comparator
 	 */
-	public static <T> void mergeSort(T[] arrays, T[] newArrays, Comparator<T> comparator) {
-		Objects.requireNonNull(arrays);
-		Objects.requireNonNull(newArrays);
+	public static <T> void mergeSort(T[] array, T[] tempArray, Comparator<T> comparator) {
+		Objects.requireNonNull(array);
+		Objects.requireNonNull(tempArray);
 		Objects.requireNonNull(comparator);
-		mergeSort(arrays, 0, arrays.length - 1, newArrays, comparator);
+		mergeSort(array, 0, array.length - 1, tempArray, comparator);
 	}
 
-	private static <T> void mergeSort(T[] arrays, int left, int right, T[] newArrays, Comparator<T> comparator) {
+	private static <T> void mergeSort(T[] array, int left, int right, T[] tempArray, Comparator<T> comparator) {
 		if (left < right) {
 			int mid = (left + right) / 2;
-			mergeSort(arrays, left, mid, newArrays, comparator);
-			mergeSort(arrays, mid + 1, right, newArrays, comparator);
-			merge(arrays, left, mid, right, newArrays, comparator);
+			mergeSort(array, left, mid, tempArray, comparator);
+			mergeSort(array, mid + 1, right, tempArray, comparator);
+			merge(array, left, mid, right, tempArray, comparator);
 		}
 	}
 
-	private static <T> void merge(T[] arrays, int left, int mid, int right, T[] newArrays, Comparator<T> comparator) {
+	private static <T> void merge(T[] array, int left, int mid, int right, T[] tempArray, Comparator<T> comparator) {
 		int i = left;// 左序列指针
 		int j = mid + 1;// 右序列指针
 		int t = 0;// 临时数组指针
 		while (i <= mid && j <= right) {
-			if (comparator.compare(arrays[i], arrays[j]) <= 0) {
-				newArrays[t++] = arrays[i++];
+			if (comparator.compare(array[i], array[j]) <= 0) {
+				tempArray[t++] = array[i++];
 			} else {
-				newArrays[t++] = arrays[j++];
+				tempArray[t++] = array[j++];
 			}
 		}
 		while (i <= mid) {// 将左边剩余元素填充进temp中
-			newArrays[t++] = arrays[i++];
+			tempArray[t++] = array[i++];
 		}
 		while (j <= right) {// 将右序列剩余元素填充进temp中
-			newArrays[t++] = arrays[j++];
+			tempArray[t++] = array[j++];
 		}
 		t = 0;
 		// 将temp中的元素全部拷贝到原数组中
-		while (left <= right) {
-			arrays[left++] = newArrays[t++];
+		int lenght = (right - left) + 1;
+		if (lenght < 3) {
+			while (left <= right) {
+				array[left++] = tempArray[t++];
+			}
+		} else {
+			System.arraycopy(tempArray, 0, array, left, lenght);
 		}
 	}
 }
