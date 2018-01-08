@@ -1,5 +1,7 @@
 package com.six.data_structure.alg;
 
+import java.util.Objects;
+
 /**
  * @author sixliu
  * @date 2018年1月6日
@@ -8,8 +10,48 @@ package com.six.data_structure.alg;
  */
 public class SumMaxSubarray {
 
-	public static MaxSubarray sumMaxSubarray(int[] src) {
-		return sumMaxSubarray(src, 0, src.length-1);
+	/**
+	 * 动态规划求最大和子数组 只有数组同时包含正负数才有意义
+	 * 
+	 * @param src
+	 * @return
+	 */
+	public static MaxSubarray sumMaxSubarrayByLinear(int[] src) {
+		Objects.requireNonNull(src);
+		Objects.checkFromIndexSize(0, src.length, src.length);
+		int maxSum = src[0];
+		int low = 0;
+		int high = 0;
+		int tempSum = 0;
+		int tempLow = 0;
+		for (int i = 1; i < src.length; i++) {
+			tempSum += src[i];
+			if (0 == tempLow) {
+				tempLow = i;
+			}
+			if (tempSum > maxSum) {
+				low = tempLow;
+				maxSum = tempSum;
+				high = i;
+			}
+			// 当统计小于等于0时，那么将tempSum和tempLow重新初始化
+			if (tempSum <= 0) {
+				tempSum = 0;
+				tempLow = 0;
+			}
+		}
+		return new MaxSubarray(low, high, maxSum);
+	}
+
+	/**
+	 * 分治递归求最大和子数组 只有数组同时包含正负数才有意义
+	 * 
+	 * @param src
+	 * @return
+	 */
+	public static MaxSubarray sumMaxSubarrayByDivide(int[] src) {
+		Objects.requireNonNull(src);
+		return sumMaxSubarray(src, 0, src.length - 1);
 	}
 
 	private static MaxSubarray findMaxSubarrayCrossing(int[] src, int low, int mid, int high) {
@@ -77,6 +119,16 @@ public class SumMaxSubarray {
 
 		public int getSum() {
 			return sum;
+		}
+
+		public boolean equals(Object ob) {
+			if (null != ob && ob instanceof MaxSubarray) {
+				MaxSubarray targetOb = (MaxSubarray) ob;
+				if (this.low == targetOb.low && this.high == targetOb.high && this.sum == targetOb.sum) {
+					return true;
+				}
+			}
+			return false;
 		}
 	}
 }
