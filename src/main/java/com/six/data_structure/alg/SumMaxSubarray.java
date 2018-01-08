@@ -18,8 +18,7 @@ public class SumMaxSubarray {
 	 */
 	public static MaxSubarray sumMaxSubarrayByLinear(int[] src) {
 		Objects.requireNonNull(src);
-		Objects.checkFromIndexSize(0, src.length, src.length);
-		int maxSum = src[0];
+		int maxSum =0;
 		int low = 0;
 		int high = 0;
 		int tempSum = 0;
