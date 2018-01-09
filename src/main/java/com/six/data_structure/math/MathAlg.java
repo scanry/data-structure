@@ -9,8 +9,8 @@ import java.util.Objects;
 public class MathAlg {
 
 	/**
-	 * n=7= 0000 0111 1= 0000 0001 n=7= (1+2)+4 n=5= 1+4
-	 * 矩阵求幂
+	 * n=7= 0000 0111 1= 0000 0001 n=7= (1+2)+4 n=5= 1+4 矩阵求幂
+	 * 
 	 * @param num
 	 * @param n
 	 * @return
@@ -83,6 +83,17 @@ public class MathAlg {
 		}
 		return null;
 
+	}
+
+	protected static int[][] doMatrixMultiplicationByDivide(int[][] a, int[][] b) {
+		int n=a.length;
+		if (n== 1) {
+			int[][] result=new int[1][1];
+			result[0][0]=a[0][0]*b[0][0];
+		}else {
+			
+		}
+		return null;
 	}
 
 	public static int[][] matrixMultiplicationByStrassen(int[][] a, int[][] b) {

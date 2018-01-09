@@ -2,6 +2,7 @@ package com.six.data_structure.sort;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
@@ -19,29 +20,55 @@ public class SortAlgTest {
 	}
 
 	public static void main(String[] args) {
-		int size = (int) Math.pow(2, 15);
-		System.out.println("size:" + size);
+		int size = (int) Math.pow(2, 6);
+		System.out.println("sort list size:" + size);
 		int bound = 100;
-		int loopCount =20;
-		boolean isPrint = false;
-		List<Integer> newList=newList(size, bound);
-		totalSpendTime("java sort", (list) -> {
+		int loopCount = 3;
+		boolean isPrint = true;
+		List<Integer> newList = newList(size, bound);
+		List<Integer> correctList = totalSpendTime("java sort", (list) -> {
 			Collections.sort(list);
-		}, newList, loopCount, isPrint);
+		}, newList, null, loopCount, false);
 		totalSpendTime("bubble sort", (list) -> {
 			SortAlg.bubbleSort(list);
-		}, newList, loopCount, isPrint);
+		}, newList, correctList, loopCount, isPrint);
+
 		totalSpendTime("insert sort", (list) -> {
 			SortAlg.insetSort(list);
-		}, newList, loopCount, isPrint);
+		}, newList, correctList, loopCount, isPrint);
+
 		totalSpendTime("merge sort", (list) -> {
 			SortAlg.mergeSort(list);
-		}, newList, loopCount, isPrint);
+		}, newList, correctList, loopCount, isPrint);
+
+		totalSpendTime("heap sort", (list) -> {
+			SortAlg.heapSort(list);
+		}, newList, correctList, loopCount, isPrint);
+
+		totalSpendTime("qucik sort", (list) -> {
+			SortAlg.quickSort(list);
+		}, newList, correctList, loopCount, isPrint);
+
 	}
 
-	public static <T> void totalSpendTime(String sortName, SortProcess<T> sortProcess, List<T> list, int loopCount,
-			boolean isPrint) {
-		List<T> copyList=new ArrayList<>(list);
+	@SuppressWarnings("unchecked")
+	public static <T> boolean checkSortResult(List<T> correctList, List<T> list) {
+		Comparator<T> comparator = (T t1, T t2) -> {
+			return ((Comparable<T>) t1).compareTo(t2);
+		};
+		boolean result = true;
+		for (int i = 0, size = correctList.size(); i < size; i++) {
+			if (comparator.compare(correctList.get(i), list.get(i)) != 0) {
+				result = false;
+				break;
+			}
+		}
+		return result;
+	}
+
+	public static <T> List<T> totalSpendTime(String sortName, SortProcess<T> sortProcess, List<T> list,
+			List<T> correctList, int loopCount, boolean isPrint) {
+		List<T> copyList = new ArrayList<>(list);
 		if (isPrint) {
 			prinitList(copyList);
 		}
@@ -53,7 +80,13 @@ public class SortAlgTest {
 		if (isPrint) {
 			prinitList(copyList);
 		}
-		System.out.println(sortName + ":" + (endTime - startTime) / loopCount);
+		if (isPrint) {
+			System.out.println(sortName + " time:" + (endTime - startTime) / loopCount);
+			if (null != correctList && correctList.size() == list.size()) {
+				System.out.println(sortName + " 结果:" + checkSortResult(correctList, copyList));
+			}
+		}
+		return copyList;
 	}
 
 	protected static List<Integer> newList(int size, int bound) {

@@ -204,4 +204,109 @@ public class SortAlg {
 			System.arraycopy(tempArray, 0, array, left, lenght);
 		}
 	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> void heapSort(List<T> list) {
+		Comparator<T> comparator = (T t1, T t2) -> {
+			return ((Comparable<T>) t1).compareTo(t2);
+		};
+		heapSort(list, comparator);
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static <T> void heapSort(List<T> list, Comparator<T> comparator) {
+		Objects.requireNonNull(list);
+		Object[] arrays = list.toArray();
+		heapSort(arrays, (Comparator) comparator);
+		ListIterator<T> i = list.listIterator();
+		for (Object e : arrays) {
+			i.next();
+			i.set((T) e);
+		}
+	}
+
+	public static <T> void heapSort(T[] array, Comparator<T> comparator) {
+		buildMaxHeap(array, comparator);
+		for (int i = array.length - 1; i >= 1; i--) {
+			exchangeElements(array, 0, i);
+			maxHeap(array, i, 0, comparator);
+		}
+	}
+
+	private static <T> void buildMaxHeap(T[] array, Comparator<T> comparator) {
+		if (array != null && array.length > 1) {
+			// 子树数量，先调整每个子树
+			int half = array.length >> 1;
+			for (int i = half; i >= 0; i--) {
+				maxHeap(array, array.length, i, comparator);
+			}
+		}
+	}
+
+	private static <T> void maxHeap(T[] array, int heapSize, int index, Comparator<T> comparator) {
+		int left = (index << 1) + 1;
+		int right = (index << 1) + 2;
+		int largest = index;
+		if (left < heapSize && comparator.compare(array[left], array[index]) > 0) {
+			largest = left;
+		}
+		if (right < heapSize && comparator.compare(array[right], array[largest]) > 0) {
+			largest = right;
+		}
+		if (index != largest) {
+			exchangeElements(array, index, largest);
+			maxHeap(array, heapSize, largest, comparator);
+		}
+	}
+
+	private static <T> void exchangeElements(T[] array, int index, int targetIndex) {
+		T temp = array[index];
+		array[index] = array[targetIndex];
+		array[targetIndex] = temp;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> void quickSort(List<T> list) {
+		Comparator<T> comparator = (T t1, T t2) -> {
+			return ((Comparable<T>) t1).compareTo(t2);
+		};
+		quickSort(list, comparator);
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static <T> void quickSort(List<T> list, Comparator<T> comparator) {
+		Objects.requireNonNull(list);
+		Object[] arrays = list.toArray();
+		quickSort(arrays, (Comparator) comparator);
+		ListIterator<T> i = list.listIterator();
+		for (Object e : arrays) {
+			i.next();
+			i.set((T) e);
+		}
+	}
+
+	public static <T> void quickSort(T[] array, Comparator<T> comparator) {
+		quickSort(array, 0, array.length - 1, comparator);
+	}
+
+	private static <T> void quickSort(T[] array, int low, int high, Comparator<T> comparator) {
+		if (low < high) {
+			int mark = partition(array, low, high, comparator);
+			quickSort(array, low, mark - 1, comparator);
+			quickSort(array, mark + 1, high, comparator);
+		}
+	}
+
+	private static <T> int partition(T[] array, int p, int r, Comparator<T> comparator) {
+		T x = array[r];
+		int i = p - 1;
+		for (int j = p; j <= i - 1; j++) {
+			if (comparator.compare(array[j], x) <= 0) {
+				i++;
+				exchangeElements(array, i, j);
+			}
+		}
+		exchangeElements(array, i + 1, r);
+		return i + 1;
+	}
 }
