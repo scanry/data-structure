@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
+import java.util.Random;
 
 /**
  * @author sixliu
@@ -285,17 +286,21 @@ public class SortAlg {
 	}
 
 	public static <T> void quickSort(T[] array, Comparator<T> comparator) {
-		quickSort(array, 0, array.length - 1, comparator);
+		quickSort(array, 0, array.length - 1, comparator,new Random());
 	}
-	
-	private static <T> void quickSort(T[] array, int low, int high, Comparator<T> comparator) {
+
+	private static <T> void quickSort(T[] array, int low, int high, Comparator<T> comparator,Random random) {
 		if (low < high) {
-			println(array);
-			int mark = partition(array, low, high, comparator);
-			println(array);
-			quickSort(array, low, mark - 1, comparator);
-			quickSort(array, mark + 1, high, comparator);
+			int mark = randomizedPartition(array, low, high, comparator,random);
+			quickSort(array, low, mark - 1, comparator,random);
+			quickSort(array, mark + 1, high, comparator,random);
 		}
+	}
+
+	private static <T> int randomizedPartition(T[] array, int low, int high, Comparator<T> comparator,Random random) {
+		int mark = new Random().nextInt(high - low) + low;
+		exchangeElements(array, mark, high);
+		return partition(array, low, high, comparator);
 	}
 
 	private static <T> int partition(T[] array, int low, int high, Comparator<T> comparator) {
@@ -309,6 +314,10 @@ public class SortAlg {
 		}
 		exchangeElements(array, mark, high);
 		return mark;
+	}
+	
+	public static <T> void countSort(T[] array, Comparator<T> comparator) {
+		quickSort(array, 0, array.length - 1, comparator,new Random());
 	}
 
 	protected static <T> void println(T[] array) {
