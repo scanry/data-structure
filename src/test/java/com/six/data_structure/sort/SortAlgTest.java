@@ -20,11 +20,11 @@ public class SortAlgTest {
 	}
 
 	public static void main(String[] args) {
-		int size = (int) Math.pow(2, 6);
+		int size = (int) Math.pow(2,3);
 		System.out.println("sort list size:" + size);
 		int bound = 100;
 		int loopCount = 3;
-		boolean isPrint = true;
+		boolean isPrint = false;
 		List<Integer> newList = newList(size, bound);
 		List<Integer> correctList = totalSpendTime("java sort", (list) -> {
 			Collections.sort(list);
@@ -80,11 +80,13 @@ public class SortAlgTest {
 		if (isPrint) {
 			prinitList(copyList);
 		}
-		if (isPrint) {
-			System.out.println(sortName + " time:" + (endTime - startTime) / loopCount);
-			if (null != correctList && correctList.size() == list.size()) {
-				System.out.println(sortName + " 结果:" + checkSortResult(correctList, copyList));
+		System.out.println(sortName + " time:" + (endTime - startTime) / loopCount);
+		if (null != correctList) {
+			boolean checkSortResult = false;
+			if (correctList.size() == list.size()) {
+				checkSortResult = checkSortResult(correctList, copyList);
 			}
+			System.out.println(sortName + " 结果:" + checkSortResult);
 		}
 		return copyList;
 	}

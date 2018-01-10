@@ -50,18 +50,15 @@ public class SortAlg {
 	 * @param arrays
 	 * @param comparator
 	 */
-	public static <E> void bubbleSort(E[] arrays, Comparator<E> comparator) {
-		Objects.requireNonNull(arrays);
+	public static <E> void bubbleSort(E[] array, Comparator<E> comparator) {
+		Objects.requireNonNull(array);
 		Objects.requireNonNull(comparator);
-		if (arrays.length > 1) {
-			E temp = null;
-			for (int j = 0; j < arrays.length; j++) {
-				int end = arrays.length - j - 1;
-				for (int i = j; i < end; i++) {
-					if (comparator.compare(arrays[i], arrays[i + 1]) > 0) {
-						temp = arrays[i];
-						arrays[i] = arrays[i + 1];
-						arrays[i + 1] = temp;
+		if (array.length > 1) {
+			for (int j = 0; j < array.length; j++) {
+				int end = array.length - j - 1;
+				for (int i = 0; i < end; i++) {
+					if (comparator.compare(array[i], array[i + 1]) > 0) {
+						exchangeElements(array, i, i + 1);
 					}
 				}
 			}
@@ -260,9 +257,11 @@ public class SortAlg {
 	}
 
 	private static <T> void exchangeElements(T[] array, int index, int targetIndex) {
-		T temp = array[index];
-		array[index] = array[targetIndex];
-		array[targetIndex] = temp;
+		if (index != targetIndex) {
+			T temp = array[index];
+			array[index] = array[targetIndex];
+			array[targetIndex] = temp;
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -288,25 +287,37 @@ public class SortAlg {
 	public static <T> void quickSort(T[] array, Comparator<T> comparator) {
 		quickSort(array, 0, array.length - 1, comparator);
 	}
-
+	
 	private static <T> void quickSort(T[] array, int low, int high, Comparator<T> comparator) {
 		if (low < high) {
+			println(array);
 			int mark = partition(array, low, high, comparator);
+			println(array);
 			quickSort(array, low, mark - 1, comparator);
 			quickSort(array, mark + 1, high, comparator);
 		}
 	}
 
-	private static <T> int partition(T[] array, int p, int r, Comparator<T> comparator) {
-		T x = array[r];
-		int i = p - 1;
-		for (int j = p; j <= i - 1; j++) {
-			if (comparator.compare(array[j], x) <= 0) {
-				i++;
-				exchangeElements(array, i, j);
+	private static <T> int partition(T[] array, int low, int high, Comparator<T> comparator) {
+		int mark = low;
+		T key = array[high];
+		for (int j = low; j < high; j++) {
+			if (comparator.compare(array[j], key) <= 0) {
+				exchangeElements(array, mark, j);
+				mark++;
 			}
 		}
-		exchangeElements(array, i + 1, r);
-		return i + 1;
+		exchangeElements(array, mark, high);
+		return mark;
 	}
+
+	protected static <T> void println(T[] array) {
+		if (null != array) {
+			for (T t : array) {
+				System.out.print(t + "\t");
+			}
+			System.out.println();
+		}
+	}
+
 }
