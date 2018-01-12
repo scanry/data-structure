@@ -61,23 +61,7 @@ public class BalanceBinaryTreeTest {
 		tree.postOrder(consumer);
 		System.out.print("\n");
 		
-		RedBlackTree<Integer> redBlackTree = new RedBlackTree<>(new Comparator<Integer>() {
-			@Override
-			public int compare(Integer o1, Integer o2) {
-				return o1.compareTo(o2);
-			}
-		});
-		for (int i = 0; i < size; i++) {
-			redBlackTree.add(i);
-		}
-		System.out.print("红黑树测试\n");
-		redBlackTree.preOrder(consumer);
-		System.out.print("\n");
-		redBlackTree.midOrder(consumer);
-		System.out.print("\n");
-		redBlackTree.postOrder(consumer);
-		System.out.print("\n");
-		
+
 		TreeBin<String,Integer> treeBin=new TreeBin<>();
 		for (int i = 0; i < size; i++) {
 			treeBin.putTreeVal(String.valueOf(i).hashCode(),String.valueOf(i),i);

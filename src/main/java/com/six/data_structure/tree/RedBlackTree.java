@@ -5,7 +5,6 @@ import java.util.Objects;
 import java.util.Stack;
 import java.util.function.Consumer;
 
-
 /**
  * @author sixliu
  * @date 2017年12月22日
@@ -45,57 +44,20 @@ public class RedBlackTree<T> {
 		public String toString() {
 			return "value=" + value;
 		}
-		
-		Node<T> balanceInsert(){
-			return null;
-		}
-		
-		@SuppressWarnings("unused")
-		protected Node<T> add(Comparator<T> comparator, T value) {
-			Node<T> root=null;
-			Node<T> insertPosition = null;
-			int cmp = comparator.compare(value, this.value);
-			if (cmp < 0) {
-				insertPosition = this.left;
-				if (null == insertPosition) {
-					this.left = new Node<>(value, this);
-					this.left.value = value;
-					root=this;
-				}
-				this.left = insertPosition.add(comparator, value);
-				if(isRed()) {
-					root=balanceInsert();
-					if(null==this.parent) {
-						this.red=0;
-					}
-				}
-			} else if (cmp > 0) {
-				insertPosition = this.right;
-				if (null == insertPosition) {
-					this.right = new Node<>(value, this);
-					this.right.value = value;
-					root=this;
-				}
-				this.right = insertPosition.add(comparator, value);
-				if(isRed()) {
-					root=balanceInsert();
-					if(null==this.parent) {
-						this.red=0;
-					}
-				}
-			}
-			return root;
-		}
-
 	}
 
+	/**
+	 * 什么时候需要调整平衡（父节点为红色）:
+	 * 1.叔节点为红色
+	 * 2.叔节点为黑色,且是父节点的左孩子
+	 * 2.叔节点为黑色,且是父节点的右孩子
+	 * @param value
+	 */
 	public void add(T value) {
 		Objects.requireNonNull(value);
 		if (null == root) {
 			root = new Node<>(value, null);
 			root.red = 0;
-			size = 1;
-			return;
 		} else {
 			Node<T> insertPosition = null;
 			Node<T> temp = root;
@@ -116,10 +78,10 @@ public class RedBlackTree<T> {
 				insertPosition.right = newNode;
 			}
 			if (insertPosition.isRed()) {
-				root = balanceInsert(insertPosition, newNode);
-			}
-			size++;
+				root = balanceInsert(root, newNode);
+			}	
 		}
+		size++;
 	}
 
 	private static <T> Node<T> balanceInsert(Node<T> root, Node<T> x) {
@@ -128,8 +90,9 @@ public class RedBlackTree<T> {
 			if ((xp = x.parent) == null) {
 				x.red = 0;
 				return x;
-			} else if (!xp.isRed() || (xpp = xp.parent) == null)
+			} else if (!xp.isRed() || (xpp = xp.parent) == null) {
 				return root;
+			}
 			if (xp == (xppl = xpp.left)) {
 				if ((xppr = xpp.right) != null && xppr.isRed()) {
 					xppr.red = 0;
