@@ -16,6 +16,10 @@ public class MathAlgTest {
 		int[][] result = MathAlg.matrixMultiplication(a, b);
 		System.out.println("结果矩阵--------------");
 		printlnMatrix(result);
+		double resultNum=Math.pow(2, 1.5);
+		System.out.println(resultNum);
+		int num=100_0000;
+		System.out.println(num);
 	}
 
 	private static void printlnMatrix(int[][] matrix) {
