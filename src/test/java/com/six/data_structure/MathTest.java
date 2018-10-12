@@ -1,5 +1,7 @@
 package com.six.data_structure;
 
+import java.util.HashMap;
+
 import com.six.data_structure.math.MathAlg;
 
 /**   
@@ -15,6 +17,8 @@ public class MathTest {
 		int b=5;
 		System.out.println(Math.pow(a,b));
 		System.out.println(MathAlg.powByDivision(a,b));
+		HashMap<String,String> mashMap=new HashMap<>();
+		mashMap.put("test", "test");
 	}
 
 }
