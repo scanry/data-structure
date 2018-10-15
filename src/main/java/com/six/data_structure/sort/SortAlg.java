@@ -51,7 +51,7 @@ public class SortAlg {
 	 * @param arrays
 	 * @param comparator
 	 */
-	public static <E> void bubbleSort(E[] array, Comparator<E> comparator) {
+	public static <E> void bubbleSort1(E[] array, Comparator<E> comparator) {
 		Objects.requireNonNull(array);
 		Objects.requireNonNull(comparator);
 		if (array.length > 1) {
@@ -60,6 +60,26 @@ public class SortAlg {
 				for (int i = 0; i < end; i++) {
 					if (comparator.compare(array[i], array[i + 1]) > 0) {
 						exchangeElements(array, i, i + 1);
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * 冒泡排序
+	 * 
+	 * @param arrays
+	 * @param comparator
+	 */
+	public static <E> void bubbleSort(E[] array, Comparator<E> comparator) {
+		Objects.requireNonNull(array);
+		Objects.requireNonNull(comparator);
+		if (array.length > 1) {
+			for (int j = 0; j < array.length; j++) {
+				for (int i = j+1; i < array.length; i++) {
+					if (comparator.compare(array[j], array[i]) > 0) {
+						exchangeElements(array, j,i);
 					}
 				}
 			}

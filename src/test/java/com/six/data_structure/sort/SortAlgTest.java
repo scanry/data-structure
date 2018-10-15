@@ -20,7 +20,7 @@ public class SortAlgTest {
 	}
 
 	public static void main(String[] args) {
-		int size = (int) Math.pow(2,15);
+		int size = (int) Math.pow(2,5);
 		System.out.println("sort list size:" + size);
 		int bound = 100;
 		int loopCount = 3;
