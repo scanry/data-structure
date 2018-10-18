@@ -1,5 +1,8 @@
 package com.six.data_structure;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author sixliu
  * @date 2017年12月23日
@@ -12,6 +15,9 @@ public class StringTest {
 		String text = "abssssa";
 		String str = "bs";
 		System.out.println(indexOf(text,str));
+		List<Number> list=new ArrayList<>();
+		list.add(0);
+		Object ob=null;
 	}
 
 	public static int indexOf(String str, String findStr, int fromIndex) {
